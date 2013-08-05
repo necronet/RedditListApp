@@ -1,7 +1,5 @@
 package com.sample.redditapp;
 
-import java.util.List;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,14 +29,19 @@ import com.android.volley.toolbox.Volley;
 public class RedditMainList extends Activity  implements OnItemClickListener{
 
 	private RedditItemAdapter  adapter;
-	private List<String> subredits;
+	private String subredit;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_reddit_main_list);
-		
 		setTitle(getString(R.string.reddit_title, "funny"));
+		
+		subredit = getIntent().getStringExtra("selected_search");
 
+		if(subredit == null)
+			subredit = "funny";
+		
 		adapter = new RedditItemAdapter(this);
 		ListView list = (ListView) findViewById(R.id.list);
 		list.setAdapter(adapter);
@@ -45,6 +49,23 @@ public class RedditMainList extends Activity  implements OnItemClickListener{
 		list.setOnItemClickListener(this);
 		
 		startNetworkOperation();
+	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		if(resultCode == RESULT_OK) {
+			Log.d("Search", "Search resulted ok");
+			subredit = data.getStringExtra("selected_search");
+
+			if(subredit == null) {
+				subredit = "funny";
+				startNetworkOperation();
+			}
+
+		}
+		
 	}
 
 	@Override
@@ -82,7 +103,7 @@ public class RedditMainList extends Activity  implements OnItemClickListener{
 	public void startNetworkOperation() {
 		RequestQueue queue = Volley.newRequestQueue(this);
 
-		String url = "http://www.reddit.com/r/funny/.json";
+		String url = String.format("http://www.reddit.com/r/%s/.json", subredit);
 		
 		JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
@@ -102,29 +123,7 @@ public class RedditMainList extends Activity  implements OnItemClickListener{
 			}
 		});
 		
-		String url2 = "http://www.reddit.com/subreddits.json";
-		
-		JsonObjectRequest request2 = new JsonObjectRequest(Request.Method.GET, url2, null, new Response.Listener<JSONObject>() {
-
-			@Override
-			public void onResponse(JSONObject response) {
-				//get all subredits wish I would have time to save it :D let see
-				try {
-					subredits = Processor.processSubredits(response);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-		}, new Response.ErrorListener() {
-
-			@Override
-			public void onErrorResponse(VolleyError error) {
-				Toast.makeText(RedditMainList.this, "Error happened", Toast.LENGTH_LONG).show();
-			}
-		});
-		
 		queue.add(request);
-		queue.add(request2);
 	}
 
 }
