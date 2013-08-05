@@ -20,8 +20,10 @@
             android:id="@+id/textAuthor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingTop="@dimen/vertical_padding"
+            android:paddingBottom="@dimen/vertical_padding"
             android:text="NECRONET"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="@dimen/main_text_size"
             android:textColor="@color/author_color" />
 
         <TextView
@@ -29,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Un texto grande para saber como se ve un subreddit"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="@dimen/detail_text_size"
             android:textColor="@color/news_color" />
 
     </LinearLayout>

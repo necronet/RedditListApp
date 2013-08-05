@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +24,16 @@ public class RedditItemAdapter extends BaseAdapter {
 	private List<RedditItem> items;
 	private RequestQueue queue;
 	private ImageLoader loader;
+	private Typeface font;
 
 	public RedditItemAdapter(Context context) {
 		this.context = context;
 		items = new ArrayList<RedditItem>();
 		queue = Volley.newRequestQueue(context);
+
+		font = Typeface.createFromAsset(context.getAssets(),
+				"bebasneue.ttf");
+		
 
 		loader = new ImageLoader(queue, new ImageCache() {
 
@@ -75,6 +81,7 @@ public class RedditItemAdapter extends BaseAdapter {
 		RedditItem item = getItem(position);
 		TextView textAuthor = (TextView) convertView
 				.findViewById(R.id.textAuthor);
+		textAuthor.setTypeface(font);
 		TextView textDescription = (TextView) convertView
 				.findViewById(R.id.textDescription);
 		textAuthor.setText(item.author);
