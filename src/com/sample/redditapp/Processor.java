@@ -36,7 +36,7 @@ public class Processor {
 		for(int i = 0 ; i < children.length(); i++) {
 			
 			JSONObject data = children.getJSONObject(i).getJSONObject("data");
-			subredits.add(data.getString("subreddit"));
+			subredits.add(data.getString("display_name"));
 			
 		}
 		
